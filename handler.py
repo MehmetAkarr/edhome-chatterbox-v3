@@ -320,5 +320,5 @@ try:
 except Exception as e:
     print(f"[WORKER] preload atlandı: {e}")
 
-if __name__ == "__main__":
-    runpod.serverless.start({"handler": handler})
+# RunPod GitHub scanner + worker entrypoint (if __name__ altında bazen görmüyor)
+runpod.serverless.start({"handler": handler})
