@@ -242,9 +242,9 @@ def wav_to_pcm16_b64(wav, sr: int) -> str:
 def tokens_for_text(text: str, speed_mode: bool) -> int:
     if not speed_mode:
         return 1000
-    # Kısa ders cümlesi: sampling tavanı düşük tut
-    approx = int(28 + len(text) * 2.6)
-    return max(140, min(300, approx))
+    # Selale: kisa dilim = kisa sampling (eski 2.6*len tok=233 faciasi)
+    approx = int(14 + len(text) * 1.8)
+    return max(40, min(140, approx))
 
 
 def handler(job):
@@ -276,8 +276,17 @@ def handler(job):
             # 0.0 resmi cross-lang; yine CFG batch var. Duygu için taban 0.3
             cfg_weight = DEFAULT_CFG_WEIGHT
         temperature = float(job_input.get("temperature", DEFAULT_TEMPERATURE))
+        first_hop = bool(job_input.get("first_hop"))
+
         max_new_tokens = int(job_input.get("max_new_tokens", tokens_for_text(text, speed_mode)))
-        max_new_tokens = max(120, min(max_new_tokens, 1000))
+
+        max_new_tokens = max(36, min(max_new_tokens, 1000))
+
+        if first_hop or len(text) < 25:
+
+            max_new_tokens = max(36, min(60, max_new_tokens))
+
+            print(f"[WORKER] first_hop={first_hop} chars={len(text)} tok_clamp={max_new_tokens}")
 
         wav, sr = generate_with_retry(
             text,

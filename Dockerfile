@@ -1,17 +1,17 @@
-# EdHome — Chatterbox Multilingual V3 (NAMUS KURULUMU)
+﻿# EdHome â€” Chatterbox Multilingual V3 (NAMUS KURULUMU)
 # =====================================================
 # Tedbirler:
-# 1) torch YENİDEN KURULMAZ → multi-GB layer yazımı YOK (I/O fail kök nedeni)
-# 2) gradio YOK (--no-deps) → image küçük
+# 1) torch YENÄ°DEN KURULMAZ â†’ multi-GB layer yazÄ±mÄ± YOK (I/O fail kÃ¶k nedeni)
+# 2) gradio YOK (--no-deps) â†’ image kÃ¼Ã§Ã¼k
 # 3) git var (perth/deps)
 # 4) pip retry + uzun timeout
-# 5) CACHE_BUST her sürümde değişir
+# 5) CACHE_BUST her sÃ¼rÃ¼mde deÄŸiÅŸir
 
 FROM runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
 
 WORKDIR /app
 
-ENV CACHE_BUST=NAMUS_V3_TR_EMO_FAST_003
+ENV CACHE_BUST=NAMUS_V3_TR_EMO_FAST_004
 ENV PYTHONUNBUFFERED=1
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PIP_DEFAULT_TIMEOUT=120
@@ -36,7 +36,7 @@ RUN echo "namus-$CACHE_BUST" > /tmp/cache_bust.txt \
 COPY requirements.txt .
 
 # Base image CUDA torch KALIR (2.4.x). chatterbox --no-deps.
-# Bu tek karar, dünkü registry I/O felaketini engellemek için.
+# Bu tek karar, dÃ¼nkÃ¼ registry I/O felaketini engellemek iÃ§in.
 RUN pip install --no-cache-dir --retries 5 --timeout 120 \
       chatterbox-tts==0.1.7 --no-deps \
  && pip install --no-cache-dir --retries 5 --timeout 120 \
@@ -50,3 +50,4 @@ COPY zumrut_hoca.WAV .
 RUN python -c "from chatterbox.mtl_tts import ChatterboxMultilingualTTS, SUPPORTED_LANGUAGES; assert 'tr' in SUPPORTED_LANGUAGES; print('CHATTERBOX_OK', sorted(SUPPORTED_LANGUAGES)[:5], '...')"
 
 CMD ["python", "-u", "handler.py"]
+
