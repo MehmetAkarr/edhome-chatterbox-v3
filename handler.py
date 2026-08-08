@@ -1,4 +1,4 @@
-"""
+﻿"""
 EdHome RunPod — Chatterbox Multilingual V3 | TR + DUYGU + HIZ
 =============================================================
 Namus kuralları (Resemble AI resmi + sahada kanıtlanan düzeltmeler):
@@ -214,7 +214,7 @@ def generate_with_retry(text: str, **kwargs):
     except Exception as first:
         print(f"[WORKER] retry tetiklendi: {first}")
         kw = dict(kwargs)
-        kw["max_new_tokens"] = min(120, max(int(kw.get("max_new_tokens", 72)) + 24, 72))
+        kw["max_new_tokens"] = min(180, max(int(kw.get("max_new_tokens", 100)) + 20, 100))
         kw["cfg_weight"] = max(float(kw.get("cfg_weight", 0.3)), 0.5)
         kw["exaggeration"] = float(kw.get("exaggeration", 0.7))
         kw["temperature"] = 0.8
@@ -244,7 +244,7 @@ def tokens_for_text(text: str, speed_mode: bool) -> int:
         return 1000
     # Selale: kisa dilim = kisa sampling (eski 2.6*len tok=233 faciasi)
     approx = int(14 + len(text) * 1.8)
-    return max(32, min(72, approx))
+    return max(120, min(180, approx))
 
 
 def handler(job):
@@ -279,13 +279,14 @@ def handler(job):
         first_hop = bool(job_input.get("first_hop"))
 
         max_new_tokens = int(job_input.get("max_new_tokens", tokens_for_text(text, speed_mode)))
-        # Sert tavan: tok=280 faciasi olmasin (speed_mode max 120)
+        # Sert tavan: tok=280 faciasi olmasin (speed_mode max 180)
         if speed_mode:
-            max_new_tokens = max(36, min(int(max_new_tokens), 72))
+            max_new_tokens = max(36, min(int(max_new_tokens), 180))
         else:
             max_new_tokens = max(36, min(int(max_new_tokens), 1000))
+        # first_hop: short/first_hop clamp 120-180 (72/90 YOK) — 5 kelime yarim kaliyordu (atlama)
         if first_hop or len(text) < 28:
-            max_new_tokens = max(32, min(max_new_tokens, 48))
+            max_new_tokens = max(120, min(max_new_tokens, 180))
             print(f"[WORKER] first_hop={first_hop} chars={len(text)} tok_clamp={max_new_tokens}")
         else:
             print(f"[WORKER] chars={len(text)} tok={max_new_tokens} speed={speed_mode}")
