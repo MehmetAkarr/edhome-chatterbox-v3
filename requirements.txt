@@ -1,0 +1,17 @@
+# UI paketi YOK (chatterbox --no-deps ile kurulur; torch base image'dan).
+# chatterbox-tts==0.1.7 Dockerfile'da --no-deps ile kurulur.
+runpod>=1.6.2,<2.0
+numpy>=1.24.0,<2.0.0
+librosa==0.11.0
+soundfile>=0.12.1
+s3tokenizer
+transformers==5.2.0
+diffusers==0.29.0
+resemble-perth>=1.0.0
+conformer==0.3.2
+safetensors==0.5.3
+spacy-pkuseg
+pykakasi==2.3.0
+pyloudnorm
+omegaconf
+huggingface_hub>=0.20.0
